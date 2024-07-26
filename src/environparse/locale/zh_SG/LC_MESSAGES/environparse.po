@@ -1,0 +1,242 @@
+# Copyright (c) 2024 53572814+nukemiko@users.noreply.github.com
+# environparse is licensed under Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#          http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# See the Mulan PSL v2 for more details.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: environparse\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-27 00:32+0800\n"
+"PO-Revision-Date: 2024-07-27 01:59+0800\n"
+"Last-Translator: Nukemiko <github.effort848@passinbox.com>\n"
+"Language-Team: github.effort848@passinbox.com\n"
+"Language: zh_SG\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SearchPath-0: __init__.py\n"
+
+#
+# File: ../../../__init__.py, line: 89
+#: __init__.py:96
+msgid "VALUE"
+msgstr "值"
+
+#
+# File: ../../../__init__.py, line: 104
+#: __init__.py:126
+msgid "STRING"
+msgstr "字符串"
+
+#
+# File: ../../../__init__.py, line: 108
+#: __init__.py:130
+msgid "The value of option {!s} cannot be empty"
+msgstr "选项 {!s} 的值不能为空"
+
+#
+# File: ../../../__init__.py, line: 134
+#: __init__.py:156
+msgid "FLOAT"
+msgstr "浮点数"
+
+#
+# File: ../../../__init__.py, line: 135
+#: __init__.py:157
+msgid "INTEGER"
+msgstr "整数"
+
+#
+# File: ../../../__init__.py, line: 144
+#: __init__.py:166
+msgid "The value of option {!s} ({!r}) cannot be interpreted as float"
+msgstr "选项 {!s} 的值（{!r}）不能被解释为浮点数"
+
+#
+# File: ../../../__init__.py, line: 151
+#: __init__.py:173
+msgid "The value of option {!s} cannot be float {!s}"
+msgstr "选项 {!s} 的值不能为浮点数 {!s}"
+
+#
+# File: ../../../__init__.py, line: 161
+#: __init__.py:183
+msgid ""
+"The value of option {!s} has exceeded the limit ({!r} digits) for integer "
+"string conversion"
+msgstr "选项 {!s} 的值超出了整数字符串转换长度限制（{!r} 位数字）"
+
+#
+# File: ../../../__init__.py, line: 167
+#: __init__.py:189
+msgid ""
+"The value of option {!s} ({!r}) cannot be interpreted as integer with base {!"
+"r}"
+msgstr "选项 {!s} 的值（{!r}）不能被解释为以 {!r} 为底的整数"
+
+#
+# File: ../../../__init__.py, line: 172
+#: __init__.py:194
+msgid "The value of option {!s} ({!r}) cannot be interpreted as integer"
+msgstr "选项 {!s} 的值（{!r}）不能被解释为整数"
+
+#
+# File: ../../../__init__.py, line: 216
+#: __init__.py:238
+msgid "BOOLEAN"
+msgstr "布尔值"
+
+#
+# File: ../../../__init__.py, line: 235
+#: __init__.py:257
+msgid "The value of option {!s} ({!r}) cannot be converted to boolean"
+msgstr "选项 {!s} 的值（{!r}）不能被转换为浮点数"
+
+#
+# File: ../../../__init__.py, line: 271
+#: __init__.py:293
+msgid "Failed to interpret the value of option {!s} ({!r}) as path: {!s}"
+msgstr "无法将选项 {!s} 的值（{!r}）解释为路径：{!s}"
+
+#
+# File: ../../../__init__.py, line: 326
+#: __init__.py:348
+msgid "FILE"
+msgstr "文件"
+
+#
+# File: ../../../__init__.py, line: 340
+#: __init__.py:362
+msgid "The value of option {!s} ({!r}) is contained null bytes"
+msgstr "选项 {!s} 的值（{!r}）包含空字节"
+
+#
+# File: ../../../__init__.py, line: 345
+#: __init__.py:367
+msgid "Failed to open the value of option {!s} as file: {!s}"
+msgstr "无法将选项 {!s} 的值作为文件打开：{!s}"
+
+#: __init__.py:518
+msgid "Show this help message and exit."
+msgstr "显示此帮助信息并退出。"
+
+#
+# File: ../../../__init__.py, line: 506
+#: __init__.py:543
+msgid ""
+"The option name prefix {!r} is not compatible with IEEE Std 1003.1-2001. "
+"Other shells and utilities may not support reading or assigning environment "
+"variables starts with this prefix."
+msgstr ""
+"选项名称前缀 {!r} 与 IEEE Std 1003.1-2001 不兼容。其他 shell 和实用程序可能不"
+"支持读取或分配以此前缀开头的环境变量。"
+
+#
+# File: ../../../__init__.py, line: 515
+#: __init__.py:552
+msgid ""
+"The option name {!r} is not compatible with IEEE Std 1003.1-2001. Other "
+"shells and utilities may not support reading or assigning environment "
+"variables with this name."
+msgstr ""
+"选项名称 {!r} 与 IEEE Std 1003.1-2001 不兼容。其他 shell 和实用程序可能不支持"
+"读取或分配使用此名称的环境变量。"
+
+#
+# File: ../../../__init__.py, line: 537
+#: __init__.py:574
+msgid "Usage: "
+msgstr "用法："
+
+#
+# File: ../../../__init__.py, line: 539
+#: __init__.py:576
+msgid "[ENVS]... {!s} {!s}"
+msgstr "[环境变量]... {!s} {!s}"
+
+#
+# File: ../../../__init__.py, line: 539
+#: __init__.py:576
+msgid "[ARGS]..."
+msgstr "[参数]..."
+
+#
+# File: ../../../__init__.py, line: 551
+#: __init__.py:580
+msgid "or"
+msgstr "或"
+
+#: __init__.py:605
+msgid ""
+"The following environment variables will be preemptively parsed and exit "
+"after performing the operation:"
+msgstr "以下环境变量将被抢先解析，并在运行操作后退出："
+
+#
+# File: ../../../__init__.py, line: 567
+#: __init__.py:632
+msgid "[Required Option]"
+msgstr "[必需选项]"
+
+#
+# File: ../../../__init__.py, line: 570
+#: __init__.py:635
+msgid "[Default: {!s}]"
+msgstr "[默认值：{!s}]"
+
+#
+# File: ../../../__init__.py, line: 571
+#: __init__.py:636
+msgid "<Empty>"
+msgstr "<空>"
+
+#
+# File: ../../../__init__.py, line: 578
+#: __init__.py:646
+msgid "Unless otherwise stated, all options are optional by default."
+msgstr "除非另有说明，所有选项默认都是可选的。"
+
+#: __init__.py:647
+msgid "List of available environment variables [ENVS]:"
+msgstr "可用的 [环境变量] 列表："
+
+#: __init__.py:779
+msgid "Environment variable parse error: {!s}"
+msgstr "环境变量解析错误：{!s}"
+
+#
+# File: ../../../__init__.py, line: 720
+#: __init__.py:826
+msgid "Missing the required environment variable: {!s}"
+msgstr "缺少必需的环境变量：{!s}"
+
+#
+# File: ../../../__init__.py, line: 728
+#: __init__.py:834
+msgid "The value of option {!s} ({!r}) is not in the following choices: {!r}"
+msgstr "选项 {!s} 的值（{!r}）不在下列选择之中：{!r}"
+
+#
+# File: ../../../__init__.py, line: 539
+#, fuzzy
+#~| msgid "[ENVS]... {!s} {!s}"
+#~ msgid "{!s}: {!s}"
+#~ msgstr "[环境变量]... {!s} {!s}"
+
+#
+# File: ../../../__init__.py, line: 544
+#~ msgid "Description"
+#~ msgstr "描述"
+
+#~ msgid "[Exitcode {!r}] {!s}"
+#~ msgstr "[退出码 {!r}] {!s}"
