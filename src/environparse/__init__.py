@@ -25,7 +25,7 @@ Signatures in this module that meet the following conditions are public:
 
 Signatures that do not satisfy the above conditions are considered implementation details.
 """
-__version__ = '0.2.0'
+__version__ = '0.2.0.post1'
 
 import abc as _abc
 import enum as _enum

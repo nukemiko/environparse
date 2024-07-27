@@ -79,7 +79,7 @@ $ >
 Now, try to test the HTTP server:
 
 ```sh-session
-$ > ROOTDIR="$HOME/Music" BIND_ADDRESS='127.127.127.127' python /tmp/scratch.py
+$ > ROOTDIR="$HOME/Music" BIND_ADDRESS='127.127.127.127' python -m environparse.examples.httpserver
 Consumed names of environment variables:
 ['BIND_ADDRESS', 'ROOTDIR']
 Parsed options:
