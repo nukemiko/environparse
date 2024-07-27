@@ -60,7 +60,6 @@ __all__ = (
     'PathAction',
     'FileOpenAction',
     'Action',
-    'DefinedOptionType',
     'EnvironmentVariableParser'
 )
 
@@ -102,7 +101,7 @@ class AbstractAction(metaclass=_abc.ABCMeta):
         return False
 
     @_abc.abstractmethod
-    def __call__(self, parser: 'EnvironmentVariableParser', option: '_DefinedOption', actual_name: str, value: str, /) -> _typing.Any:
+    def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> _typing.Any:
         raise NotImplementedError
 
 
@@ -112,7 +111,7 @@ class HelpAction(AbstractAction):
     def early(self) -> bool:
         return True
 
-    def __call__(self, parser: 'EnvironmentVariableParser', option: '_DefinedOption', actual_name: str, value: str, /) -> _typing.NoReturn:
+    def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> _typing.NoReturn:
         parser.printHelp(show_default=True)
         raise EnvironmentVariableParseError(exitcode=0)
 
@@ -127,7 +126,7 @@ class StringAction(AbstractAction):
     def metavar(self) -> str:
         return _('STRING')
 
-    def __call__(self, parser: 'EnvironmentVariableParser', option: '_DefinedOption', actual_name: str, value: str, /) -> str:
+    def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> str:
         if not (value or self.allow_empty):
             raise RunActionError(_('The value of option {!s} cannot be empty').format(actual_name))
 
@@ -158,7 +157,7 @@ class NumberAction(AbstractAction):
             return _('FLOAT')
         return _('INTEGER')
 
-    def __call__(self, parser: 'EnvironmentVariableParser', option: '_DefinedOption', actual_name: str, value: str, /) -> int | float:
+    def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> int | float:
         if self.is_float:
             try:
                 result = float(value)
@@ -239,7 +238,7 @@ class BooleanAction(AbstractAction):
     def metavar(self) -> str:
         return _('BOOLEAN')
 
-    def __call__(self, parser: 'EnvironmentVariableParser', option: '_DefinedOption', actual_name: str, value: str, /) -> bool:
+    def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> bool:
         if self.reversed:
             beforeReturn = _operator.not_
         else:
@@ -283,7 +282,7 @@ class PathAction(AbstractAction):
     def metavar(self) -> str:
         return 'PATH'
 
-    def __call__(self, parser: 'EnvironmentVariableParser', option: '_DefinedOption', actual_name: str, value: str, /) -> _Path:
+    def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> _Path:
         p = self.path_cls(value)
 
         if self.resolve:
@@ -349,7 +348,7 @@ class FileOpenAction(AbstractAction):
     def metavar(self) -> str:
         return _('FILE')
 
-    def __call__(self, parser: 'EnvironmentVariableParser', option: '_DefinedOption', actual_name: str, value: str, /) -> _typing.IO:
+    def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> _typing.IO:
         try:
             return open(file=value,
                         mode=self.mode,
@@ -386,7 +385,7 @@ class Action(_enum.Enum):
 
 
 @_attrs.frozen(kw_only=True, slots=False)
-class _DefinedOption:
+class DefinedOption:
     names: tuple[str, ...] = _attrs.field(
         validator=_attrs.validators.deep_iterable(
             member_validator=_attrs.validators.instance_of(str),
@@ -412,44 +411,6 @@ class _DefinedOption:
     description: str | None = _attrs.field(validator=_attrs.validators.optional(_attrs.validators.instance_of(str)))
     metavar: str | None = _attrs.field(validator=_attrs.validators.optional(_attrs.validators.instance_of(str)))
     annotation: _typing.Any = _attrs.field()
-
-
-class DefinedOptionType(_typing.Protocol):
-    @property
-    def name(self) -> tuple[str, ...]:
-        raise NotImplementedError
-
-    @property
-    def description(self) -> str | None:
-        raise NotImplementedError
-
-    @property
-    def action(self) -> AbstractAction:
-        raise NotImplementedError
-
-    @property
-    def required(self) -> bool:
-        raise NotImplementedError
-
-    @property
-    def dest(self) -> str:
-        raise NotImplementedError
-
-    @property
-    def metavar(self) -> str | None:
-        raise NotImplementedError
-
-    @property
-    def default(self) -> _typing.Any:
-        raise NotImplementedError
-
-    @property
-    def choices(self) -> tuple | None:
-        raise NotImplementedError
-
-    @property
-    def annotation(self) -> _typing.Any:
-        raise NotImplementedError
 
 
 class _RegexPatterns(_enum.Enum):
@@ -504,8 +465,8 @@ class EnvironmentVariableParser:
             exit_on_error (bool): Determines whether EnvironmentVariableParser exits with error info when an error occurs.
             show_default (bool): Determines whether the parser includes default value for all defined options in the help message.
         """
-        self.__defined_options: list[_DefinedOption] = []
-        self.__defined_early_options: list[_DefinedOption] = []
+        self.__defined_options: list[DefinedOption] = []
+        self.__defined_early_options: list[DefinedOption] = []
         self.__defined_option_names: list[str] = []
         self.__defined_option_dest_names: list[str] = []
         if console is None:
@@ -708,7 +669,7 @@ class EnvironmentVariableParser:
                      description: str | None = None,
                      show_default: bool | None = None,
                      annotation: _typing.Any = _typing.Any
-                     ) -> _DefinedOption:
+                     ) -> DefinedOption:
         """Define how a single environment variable should be parsed.
 
         ``action`` is played an essential role in the option value conversion. It can be:
@@ -790,17 +751,17 @@ class EnvironmentVariableParser:
         if show_default is not None:
             show_default = bool(show_default)
 
-        defined_option = _DefinedOption(names=names,
-                                        description=description,
-                                        action=selected_action,
-                                        required=required,
-                                        dest=dest,
-                                        metavar=metavar,
-                                        default=default,
-                                        choices=choices,
-                                        annotation=annotation,
-                                        show_default=show_default
-                                        )
+        defined_option = DefinedOption(names=names,
+                                       description=description,
+                                       action=selected_action,
+                                       required=required,
+                                       dest=dest,
+                                       metavar=metavar,
+                                       default=default,
+                                       choices=choices,
+                                       annotation=annotation,
+                                       show_default=show_default
+                                       )
         if defined_option.action.early:
             self.__defined_early_options.append(defined_option)
         else:
