@@ -396,12 +396,9 @@ class _DefinedOption:
             )
         )
     )
-    description: str | None = _attrs.field(validator=_attrs.validators.optional(_attrs.validators.instance_of(str)))
     action: AbstractAction = _attrs.field(validator=_attrs.validators.instance_of(AbstractAction))
     required: bool = _attrs.field(converter=bool)
     dest: str = _attrs.field(validator=_attrs.validators.instance_of(str))
-    metavar: str | None = _attrs.field(validator=_attrs.validators.optional(_attrs.validators.instance_of(str)))
-    default: _typing.Any = _attrs.field()
     choices: tuple | None = _attrs.field(
         validator=_attrs.validators.optional(
             _attrs.validators.deep_iterable(
@@ -410,6 +407,10 @@ class _DefinedOption:
             )
         )
     )
+    default: _typing.Any = _attrs.field()
+    show_default: bool | None = _attrs.field()
+    description: str | None = _attrs.field(validator=_attrs.validators.optional(_attrs.validators.instance_of(str)))
+    metavar: str | None = _attrs.field(validator=_attrs.validators.optional(_attrs.validators.instance_of(str)))
     annotation: _typing.Any = _attrs.field()
 
 
@@ -465,9 +466,9 @@ class EnvironmentVariableParser:
     Note: Command line parsing does not support. Please use argparse.ArgumentParser instead.
     """
     __slots__ = (
-        '__defined_options', '__defined_early_options',
-        '__defined_option_names', '__defined_option_dest_names', '__console',
-        '__prefix', 'prog', 'cmdline_usage', 'description', 'epilog', 'exit_on_error'
+        '__defined_options', '__defined_early_options', '__defined_option_names', '__defined_option_dest_names',
+        '__console', '__prefix',
+        'prog', 'cmdline_usage', 'description', 'epilog', 'exit_on_error', 'show_default'
     )
 
     def __init__(self,
@@ -478,7 +479,8 @@ class EnvironmentVariableParser:
                  epilog: str | None = None,
                  console: _console.Console | None = None,
                  add_help: bool = True,
-                 exit_on_error: bool = True
+                 exit_on_error: bool = True,
+                 show_default: bool = True
                  ) -> None:
         """Initialize the EnvironmentVariableParser object with optional parameters.
 
@@ -486,6 +488,10 @@ class EnvironmentVariableParser:
         exits with error info when an error occurs.
         If you want to handle errors manually, disable it and catch
         ``EnvironmentVariableParseError`` during ``parseOptions()``.
+
+        ``show_default`` is a global flag to determine whether the parser
+        includes default value for all defined options in the help message.
+        The argument has the same name in the ``self.defineOption()`` can override this behavior.
 
         Args:
             prefix (str): The prefix for option names.
@@ -496,6 +502,7 @@ class EnvironmentVariableParser:
             console (rich.console.Console, optional): An object has implemented Rich Console API. Defaults to ``None``.
             add_help (bool): Add an option before finishing the instantiation to show the help message. Defaults to ``False``.
             exit_on_error (bool): Determines whether EnvironmentVariableParser exits with error info when an error occurs.
+            show_default (bool): Determines whether the parser includes default value for all defined options in the help message.
         """
         self.__defined_options: list[_DefinedOption] = []
         self.__defined_early_options: list[_DefinedOption] = []
@@ -515,6 +522,7 @@ class EnvironmentVariableParser:
         self.description = description
         self.epilog = epilog
         self.exit_on_error = exit_on_error
+        self.show_default = show_default
 
         if add_help:
             self.defineOption('HELP', action=Action.HELP, description=_('Show this help message and exit.'))
@@ -578,7 +586,16 @@ class EnvironmentVariableParser:
         cmdline_usage = _('[ENVS]... {!s} {!s}').format(prog, self.cmdline_usage or _('[ARGS]...'))
         self.__console.print(f'{usage_prompt!s}{cmdline_usage!s}')
 
-    def printOptionsAndDescriptions(self, *, show_default: bool = False) -> None:
+    def printOptionsAndDescriptions(self, **_deprecated) -> None:
+        if _deprecated:
+            _warnings.warn(
+                DeprecationWarning(
+                    'Passing additional keyword-only arguments is deprecated; '
+                    'now all keyword-only arguments passed to {!s}() will be ignored. '
+                    'This feature will be removed in future versions.'.format(self.printOptionsAndDescriptions.__name__)
+                )
+            )
+
         option_names_conj = _('or')
         renderables = []
 
@@ -632,7 +649,14 @@ class EnvironmentVariableParser:
                     row_column2_lines.extend(option.description.splitlines())
                 if option.required:
                     row_column2_lines.append(_('[Required Option]'))
-                elif show_default:
+                elif self.show_default:
+                    if option.show_default is not False:
+                        row_column2_lines.append(
+                            _('[Default: {!s}]').format(
+                                _('<Empty>') if option.default is None else option.default
+                            )
+                        )
+                elif option.show_default:
                     row_column2_lines.append(
                         _('[Default: {!s}]').format(
                             _('<Empty>') if option.default is None else option.default
@@ -654,13 +678,22 @@ class EnvironmentVariableParser:
         for renderable in renderables:
             self.__console.print(renderable)
 
-    def printHelp(self, *, show_default: bool = False) -> None:
+    def printHelp(self, **_deprecated) -> None:
+        if _deprecated:
+            _warnings.warn(
+                DeprecationWarning(
+                    'Passing additional keyword-only arguments is deprecated; '
+                    'now all keyword-only arguments passed to {!s}() will be ignored. '
+                    'This feature will be removed in future versions.'.format(self.printHelp.__name__)
+                )
+            )
+
         self.printUsage()
         if self.description and self.description.strip():
             self.__console.print()
             self.__console.print(self.description)
         self.__console.print()
-        self.printOptionsAndDescriptions(show_default=show_default)
+        self.printOptionsAndDescriptions()
         if self.epilog and self.epilog.strip():
             self.__console.print(self.epilog)
 
@@ -673,21 +706,35 @@ class EnvironmentVariableParser:
                      choices: _typing.Iterable[_typing.Any] | None = None,
                      default: _typing.Any = None,
                      description: str | None = None,
+                     show_default: bool | None = None,
                      annotation: _typing.Any = _typing.Any
                      ) -> _DefinedOption:
         """Define how a single environment variable should be parsed.
 
         ``action`` is played an essential role in the option value conversion. It can be:
 
-            - A string represented to name of an internal action.
-              The uppercase form of the name must be equal to attribute
-              ``name`` of any member in the enum class ``Action``.
-            - A member in the enum class ``Action``.
-            - An instance of a class that is inherited from ``AbstractAction``.
+        - A string represented to name of an internal action.
+          The uppercase form of the name must be equal to attribute
+          ``name`` of any member in the enum class ``Action``.
+        - A member in the enum class ``Action``.
+        - An instance of a class that is inherited from ``AbstractAction``.
 
         To use your customized action, you need to inherit from ``AbstractAction``
         and implement the ``__call__()`` method: put your logic into this method,
         and ensure it can handle the option value conversion.
+
+        ``show_default`` is a flag to determine whether the parser
+        includes the default value for this option in the help message.
+        It accepts ``True``, ``False`` or ``None`` as the value.
+        Different values will affect the behavior of the parser in generating help messages:
+
+        - ``True``: Always add the default value of option into help messages,
+          regardless of the parser behavior.
+        - ``False``: Avoid adding the default value of option into help messages,
+          regardless of the parser behavior.
+        - ``None``: Follow the parser behavior.
+
+        The parser behavior can be affected by parser instance attribute ``show_default``.
 
         Args:
             *names (str): Names of the option.
@@ -698,6 +745,7 @@ class EnvironmentVariableParser:
             choices (Iterable[Any], optional): List of choices for the option. Defaults to ``None``.
             default (Any, optional): Default value for the option. Defaults to ``None``.
             description (str, optional): Description text for the option. Defaults to ``None``.
+            show_default (bool | None, optional): Determines whether the parser includes the default value for this option in the help message.
             annotation (Any, optional): Typing annotation for the value of option. Defaults to ``typing.Any``.
 
         Returns:
@@ -739,6 +787,9 @@ class EnvironmentVariableParser:
             if not choices:
                 raise ValueError('Choice sequence is empty')
 
+        if show_default is not None:
+            show_default = bool(show_default)
+
         defined_option = _DefinedOption(names=names,
                                         description=description,
                                         action=selected_action,
@@ -747,7 +798,8 @@ class EnvironmentVariableParser:
                                         metavar=metavar,
                                         default=default,
                                         choices=choices,
-                                        annotation=annotation
+                                        annotation=annotation,
+                                        show_default=show_default
                                         )
         if defined_option.action.early:
             self.__defined_early_options.append(defined_option)
