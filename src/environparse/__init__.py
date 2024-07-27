@@ -784,6 +784,7 @@ class EnvironmentVariableParser:
         self.__console.print()
         self.printOptionsAndDescriptions()
         if self.epilog and self.epilog.strip():
+            self.__console.print()
             self.__console.print(self.epilog)
 
     def defineOption(self,
