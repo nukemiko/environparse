@@ -57,6 +57,9 @@ __all__ = (
     'StringAction',
     'NumberAction',
     'BooleanAction',
+    'PathValidationError',
+    'AbstractPathValidator',
+    'PathValidators',
     'PathAction',
     'FileOpenAction',
     'Action',
@@ -268,6 +271,99 @@ class BooleanAction(AbstractAction):
             return beforeReturn(integer > 0)
 
 
+class PathValidationError(RunActionError):
+    def __init__(self, actual_name: str, message: str, exitcode: int = 1) -> None:
+        self.message = _(
+            'The value of option {!s} does not pass path validation: {!s}'
+        ).format(actual_name, message)
+        self.exitcode = exitcode
+        super().__init__(self.message, self.exitcode)
+
+
+class AbstractPathValidator(metaclass=_abc.ABCMeta):
+    __slots__ = ()
+
+    @property
+    def conflict_with(self) -> 'list[type[AbstractPathValidator]]':
+        return []
+
+    @_abc.abstractmethod
+    def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> None:
+        raise NotImplementedError
+
+
+class PathValidators:
+    __slots__ = ()
+
+    class IsExists(AbstractPathValidator):
+        __slots__ = ()
+
+        @property
+        def conflict_with(self) -> 'list[type[AbstractPathValidator]]':
+            return [PathValidators.IsNotExists]
+
+        def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> None:
+            if not _os.path.exists(value):
+                raise PathValidationError(
+                    actual_name,
+                    str(OSError(_errno.ENOENT, _c(_os.strerror(_errno.ENOENT)), value))
+                )
+
+    class IsNotExists(AbstractPathValidator):
+        __slots__ = ()
+
+        @property
+        def conflict_with(self) -> 'list[type[AbstractPathValidator]]':
+            return [PathValidators.IsExists]
+
+        def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> None:
+            if _os.path.exists(value):
+                raise PathValidationError(
+                    actual_name,
+                    str(OSError(_errno.EEXIST, _c(_os.strerror(_errno.EEXIST)), value))
+                )
+
+    class IsDir(AbstractPathValidator):
+        __slots__ = ()
+
+        @property
+        def conflict_with(self) -> 'list[type[AbstractPathValidator]]':
+            return [PathValidators.IsNotDir]
+
+        def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> None:
+            if not _os.path.isdir(value):
+                raise PathValidationError(
+                    actual_name,
+                    str(OSError(_errno.ENOTDIR, _c(_os.strerror(_errno.ENOTDIR)), value))
+                )
+
+    class IsNotDir(AbstractPathValidator):
+        __slots__ = ()
+
+        @property
+        def conflict_with(self) -> 'list[type[AbstractPathValidator]]':
+            return [PathValidators.IsDir]
+
+        def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> None:
+            if _os.path.isdir(value):
+                raise PathValidationError(
+                    actual_name,
+                    str(OSError(_errno.EISDIR, _c(_os.strerror(_errno.EISDIR)), value))
+                )
+
+    @_attrs.frozen(kw_only=False, slots=False)
+    class HasPermission(AbstractPathValidator):
+        mode: int = _attrs.field(validator=_attrs.validators.instance_of(int))
+        follow_symlinks: bool = _attrs.field(default=True, converter=bool, kw_only=True)
+
+        def __call__(self, parser: 'EnvironmentVariableParser', option: 'DefinedOption', actual_name: str, value: str, /) -> None:
+            if not _os.access(value, self.mode, follow_symlinks=self.follow_symlinks):
+                raise PathValidationError(
+                    actual_name,
+                    str(OSError(_errno.EACCES, _c(_os.strerror(_errno.EACCES)), value))
+                )
+
+
 @_attrs.frozen(kw_only=True, slots=False)
 class PathAction(AbstractAction):
     path_cls: type[_Path] | type[_PosixPath] | type[_WindowsPath] = _attrs.field(
@@ -276,6 +372,35 @@ class PathAction(AbstractAction):
             (_Path, _PosixPath, _WindowsPath)
         )
     )
+    validators: _typing.Sequence[AbstractPathValidator] = _attrs.field(factory=list)
+
+    @validators.validator  # type:ignore
+    def _validatorForAttributeValidators(self, attr: _attrs.Attribute, value: _typing.Sequence[AbstractPathValidator]) -> None:
+        if not isinstance(value, _typing.Sequence):
+            raise TypeError(
+                '{!r} should be a sequence of {!r} objects (got {!r} that is {!r} object)'.format(
+                    attr.name,
+                    AbstractPathValidator.__name__,
+                    value,
+                    type(value).__name__
+                )
+            )
+
+        validator_types = set(type(__) for __ in value)
+        for item in value:
+            if not isinstance(item, AbstractPathValidator):
+                raise TypeError(
+                    '{!r} can only contains {!r} objects (got {!r} that is {!r} object)'.format(
+                        attr.name,
+                        AbstractPathValidator.__name__,
+                        item,
+                        type(item).__name__
+                    )
+                )
+            for conflicted in item.conflict_with:
+                if conflicted in validator_types:
+                    raise ValueError('Conflicted path validators: {!r} and {!r}'.format(conflicted.__name__, type(item).__name__))
+
     resolve: bool = _attrs.field(default=False, converter=bool)
 
     @property
@@ -297,6 +422,9 @@ class PathAction(AbstractAction):
                         OSError(_errno.ELOOP, _c(_os.strerror(_errno.ELOOP)), value)
                     )
                 ) from exc
+
+        for validator in self.validators:
+            validator(parser, option, actual_name, value)
 
         return p
 
