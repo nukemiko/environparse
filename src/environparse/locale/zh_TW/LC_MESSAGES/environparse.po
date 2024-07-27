@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: environparse\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-27 00:32+0800\n"
-"PO-Revision-Date: 2024-07-27 01:59+0800\n"
+"POT-Creation-Date: 2024-07-28 03:03+0800\n"
+"PO-Revision-Date: 2024-07-28 03:04+0800\n"
 "Last-Translator: Nukemiko <github.effort848@passinbox.com>\n"
 "Language-Team: github.effort848@passinbox.com\n"
 "Language: zh_TW\n"
@@ -28,49 +28,49 @@ msgstr ""
 
 #
 # File: ../../../__init__.py, line: 89
-#: __init__.py:96
+#: __init__.py:100
 msgid "VALUE"
 msgstr "值"
 
 #
 # File: ../../../__init__.py, line: 104
-#: __init__.py:126
+#: __init__.py:130
 msgid "STRING"
 msgstr "字串"
 
 #
 # File: ../../../__init__.py, line: 108
-#: __init__.py:130
+#: __init__.py:134
 msgid "The value of option {!s} cannot be empty"
 msgstr "選項 {!s} 的值不能為空"
 
 #
 # File: ../../../__init__.py, line: 134
-#: __init__.py:156
+#: __init__.py:160
 msgid "FLOAT"
 msgstr "浮點數"
 
 #
 # File: ../../../__init__.py, line: 135
-#: __init__.py:157
+#: __init__.py:161
 msgid "INTEGER"
 msgstr "整數"
 
 #
 # File: ../../../__init__.py, line: 144
-#: __init__.py:166
+#: __init__.py:170
 msgid "The value of option {!s} ({!r}) cannot be interpreted as float"
 msgstr "選項 {!s} 的值（{!r}）不能被解釋為浮點數"
 
 #
 # File: ../../../__init__.py, line: 151
-#: __init__.py:173
+#: __init__.py:177
 msgid "The value of option {!s} cannot be float {!s}"
 msgstr "選項 {!s} 的值不能為浮點數 {!s}"
 
 #
 # File: ../../../__init__.py, line: 161
-#: __init__.py:183
+#: __init__.py:187
 msgid ""
 "The value of option {!s} has exceeded the limit ({!r} digits) for integer "
 "string conversion"
@@ -78,7 +78,7 @@ msgstr "選項 {!s} 的值超出了整數字符串轉換長度限制（{!r} 位�
 
 #
 # File: ../../../__init__.py, line: 167
-#: __init__.py:189
+#: __init__.py:193
 msgid ""
 "The value of option {!s} ({!r}) cannot be interpreted as integer with base {!"
 "r}"
@@ -86,53 +86,59 @@ msgstr "選項 {!s} 的值（{!r}）不能被解釋為以 {!r} 為底的整數"
 
 #
 # File: ../../../__init__.py, line: 172
-#: __init__.py:194
+#: __init__.py:198
 msgid "The value of option {!s} ({!r}) cannot be interpreted as integer"
 msgstr "選項 {!s} 的值（{!r}）不能被解釋為整數"
 
 #
 # File: ../../../__init__.py, line: 216
-#: __init__.py:238
+#: __init__.py:242
 msgid "BOOLEAN"
 msgstr "布林值"
 
 #
 # File: ../../../__init__.py, line: 235
-#: __init__.py:257
+#: __init__.py:261
 msgid "The value of option {!s} ({!r}) cannot be converted to boolean"
 msgstr "選項 {!s} 的值（{!r}）不能被轉換為浮點數"
 
 #
+# File: ../../../__init__.py, line: 151
+#: __init__.py:277
+msgid "The value of option {!s} does not pass path validation: {!s}"
+msgstr "選項 {!s} 的值未能透過路徑驗證：{!s}"
+
+#
 # File: ../../../__init__.py, line: 271
-#: __init__.py:293
+#: __init__.py:419
 msgid "Failed to interpret the value of option {!s} ({!r}) as path: {!s}"
 msgstr "無法將選項 {!s} 的值（{!r}）解釋為路徑：{!s}"
 
 #
 # File: ../../../__init__.py, line: 326
-#: __init__.py:348
+#: __init__.py:477
 msgid "FILE"
 msgstr "檔案"
 
 #
 # File: ../../../__init__.py, line: 340
-#: __init__.py:362
+#: __init__.py:491
 msgid "The value of option {!s} ({!r}) is contained null bytes"
 msgstr "選項 {!s} 的值（{!r}）包含空位元組"
 
 #
 # File: ../../../__init__.py, line: 345
-#: __init__.py:367
+#: __init__.py:496
 msgid "Failed to open the value of option {!s} as file: {!s}"
 msgstr "無法將選項 {!s} 的值作為檔案開啟：{!s}"
 
-#: __init__.py:518
+#: __init__.py:617
 msgid "Show this help message and exit."
 msgstr "顯示此幫助資訊並退出。"
 
 #
 # File: ../../../__init__.py, line: 506
-#: __init__.py:543
+#: __init__.py:642
 msgid ""
 "The option name prefix {!r} is not compatible with IEEE Std 1003.1-2001. "
 "Other shells and utilities may not support reading or assigning environment "
@@ -143,7 +149,7 @@ msgstr ""
 
 #
 # File: ../../../__init__.py, line: 515
-#: __init__.py:552
+#: __init__.py:651
 msgid ""
 "The option name {!r} is not compatible with IEEE Std 1003.1-2001. Other "
 "shells and utilities may not support reading or assigning environment "
@@ -154,29 +160,29 @@ msgstr ""
 
 #
 # File: ../../../__init__.py, line: 537
-#: __init__.py:574
+#: __init__.py:673
 msgid "Usage: "
 msgstr "用法："
 
 #
 # File: ../../../__init__.py, line: 539
-#: __init__.py:576
+#: __init__.py:675
 msgid "[ENVS]... {!s} {!s}"
 msgstr "[環境變數]... {!s} {!s}"
 
 #
 # File: ../../../__init__.py, line: 539
-#: __init__.py:576
+#: __init__.py:675
 msgid "[ARGS]..."
 msgstr "[引數]..."
 
 #
 # File: ../../../__init__.py, line: 551
-#: __init__.py:580
+#: __init__.py:688
 msgid "or"
 msgstr "或"
 
-#: __init__.py:605
+#: __init__.py:713
 msgid ""
 "The following environment variables will be preemptively parsed and exit "
 "after performing the operation:"
@@ -184,47 +190,52 @@ msgstr "以下環境變數將被搶先解析，並在執行操作後退出："
 
 #
 # File: ../../../__init__.py, line: 567
-#: __init__.py:632
+#: __init__.py:740
 msgid "[Required Option]"
 msgstr "[必需選項]"
 
 #
 # File: ../../../__init__.py, line: 570
-#: __init__.py:635
+#: __init__.py:744 __init__.py:750
 msgid "[Default: {!s}]"
 msgstr "[預設值：{!s}]"
 
 #
 # File: ../../../__init__.py, line: 571
-#: __init__.py:636
+#: __init__.py:745 __init__.py:751
 msgid "<Empty>"
 msgstr "<空>"
 
 #
 # File: ../../../__init__.py, line: 578
-#: __init__.py:646
+#: __init__.py:761
 msgid "Unless otherwise stated, all options are optional by default."
 msgstr "除非另有說明，所有選項預設都是可選的。"
 
-#: __init__.py:647
+#: __init__.py:762
 msgid "List of available environment variables [ENVS]:"
 msgstr "可用的 [環境變數] 列表："
 
-#: __init__.py:779
-msgid "Environment variable parse error: {!s}"
-msgstr "環境變數解析錯誤：{!s}"
+#: __init__.py:923
+msgid "Environment variable parse error"
+msgstr "環境變數解析出錯"
 
 #
 # File: ../../../__init__.py, line: 720
-#: __init__.py:826
+#: __init__.py:969
 msgid "Missing the required environment variable: {!s}"
 msgstr "缺少必需的環境變數：{!s}"
 
 #
 # File: ../../../__init__.py, line: 728
-#: __init__.py:834
+#: __init__.py:977
 msgid "The value of option {!s} ({!r}) is not in the following choices: {!r}"
 msgstr "選項 {!s} 的值（{!r}）不在下列選擇之中：{!r}"
+
+#
+# File: ../../../__init__.py, line: 345
+#~ msgid "Path validation for the value of option {!s} failed: {!s}"
+#~ msgstr "選項 {!s} 的值的路徑驗證失敗：{!s}"
 
 #
 # File: ../../../__init__.py, line: 539
