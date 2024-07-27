@@ -905,8 +905,9 @@ class EnvironmentVariableParser:
             highlight=True
         )
 
-    def beforeExit(self, message: str) -> None:
-        self.__console.print('{!s}: {!s}'.format(self.prog or _shlex.quote(_os.path.basename(_sys.argv[0])), message))
+    def beforeExit(self, *messages: str) -> None:
+        for message in messages:
+            self.__console.print('{!s}: {!s}'.format(self.prog or _shlex.quote(_os.path.basename(_sys.argv[0])), message))
 
     @staticmethod
     def _exitGracefully(method: _typing.Callable[_P, _T]) -> _typing.Callable[_P, _T]:
@@ -919,7 +920,7 @@ class EnvironmentVariableParser:
                 except EnvironmentVariableParseError as exc:
                     if exc.exitcode != 0:
                         if exc.message:
-                            self.beforeExit(_('Environment variable parse error: {!s}').format(exc.message))
+                            self.beforeExit(_('Environment variable parse error'), exc.message)
                     elif exc.message:
                         self.beforeExit(exc.message)
                     _sys.exit(exc.exitcode)
